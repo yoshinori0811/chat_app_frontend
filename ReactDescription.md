@@ -1,0 +1,116 @@
+# 依存関係
+    - index.tsx -> app.tsx
+    - app.tsx -> 各関数コンポーネントファイル
+    - 各関数コンポーネントファイル -> 各hooksファイル
+
+
+# 各ファイルの解説
+    - src/index.tsx
+        - 概要
+            実行ファイル
+        - import ライブラリ
+            - react-dom-client
+            - @tanstack/react-query
+                - 非同期状態管理ライブラリ
+                - サーバーデータ(APIレスポンス)のキャッシュ
+                - バックグランドでのデータ更新
+                    - ウインドウにフォーカスしたタイミングでの再取得や、一定間隔での再取得をしてくれる設定もできる
+                    (fleshの間は常にキャッシュからデータを取得、staleの場合はキャッシュを返しつつデータを再取得しキャッシュを更新する)
+                - Reactアプリ全体でサーバー状態の取得、キャッシュ、同期、および更新を簡単にするライブラリ
+            - @tanstack/react-query-devtools
+                - react-queryの開発者ツール
+                    - キャッシュされたデータを確認できる
+                    - flesh、staleを確認、変更でき再取得時の挙動を確認できる
+                    - development buildでのみ有効(本番ではビルドされない)
+        - import パッケージ
+            - ./reportWebVitals
+                - パフォーマンス監視に関するサービスのインポート
+            - ./index.css
+                - アプリ共通スタイルを記載したファイル
+            - ./App
+                - ルーティングファイルのインポート
+        - コード解説
+            - const queryClient = new QueryClient({})
+                - react queryの共通設定を行う(useQueryで個別設定も可能)
+            - <React.StrictMode>とは
+                - これに囲まれたjsコードのエラー/構文チェックを行うもの
+                - レンダリングが2回行われる
+                - ビルド時は無効になり１回のレンダリングとなる
+            - <QueryClientProvider client={queryClient}>とは
+                - APIのキャッシュデータを全ページで使えるようindex.tsxに記載する
+                - このタグで囲った部分にreact queryを反映させる
+            -  <ReactQueryDevtools initialIsOpen={false} />とは
+                - <QueryClientProvider>の子要素として最後に記述すると前頁で開発者ツールを使用できる。
+                - initialIsOpen={false}とするとアイコンをクリックすると開発者ツールを開けるようになる
+            - <App />
+                - ルーティングを記載したファイルを読み込んでいる(ルーティングでurlにアクセスしたときのページ、処理をハンドルしている)
+            - reportWebVitals();
+                - パフォーマンス監視のサービスを呼び出す
+                    - 以下のように呼び出すといろんなパフォーマンスをchromeのdevツールから確認できる
+                        - reportWebVitals(console.log);
+                        - reportWebVitals(sendToAnalytics);
+    - src/app.tsx
+        - 概要
+            - アプリのルーティングファイル(エンドポイントによって描画する画面をハンドルする)
+        - import ライブラリ
+            - import { useEffect } from 'react';
+            - import { BrowserRouter, Route, Routes } from 'react-router-dom';
+            - import axios from 'axios';
+        - import パッケージ
+            - import { CsrfToken } from './types';
+            - import { Auth } from './components/Auth';
+            - import { Home } from './components/Home';
+        - コード解説
+            - useEffect()
+            - <BrowserRouter>
+                - ルーティングを行うアプリケーション全体をラップするために使用(return で１階層のみしか返せないためラップしている？)
+                - このタグでラップすることでSPA(ページをリロードせずにurlに応じた画面遷移するアプリ)となる
+            - <Routes>
+                - <Route />をラップするためのタグ。効率的にurlとマッチさせレンダリングしてくれる
+                - 昔は代わりに<switch />が使用されていた（<Route />の記述方法が若干変わるので注意）
+            - <Route />
+                - 特定のパスに対してレンダリングするコンポーネントを定義
+    - componentsファイル
+        - 概要
+            - ルーティングから呼び出されるコンポーネント関数ファイル(htmlのコンポーネント)
+        - import ライブラリ
+            - import { useState, FormEvent } from "react"
+            - import { CheckBadgeIcon, ArrowPathIcon } from "@heroicons/react/24/solid"
+                - アイコンのインポート
+        - import パッケージ
+            - import { useMutateAuth } from "../hooks/useMutateAuth"
+        - コード解説
+            - const [email, setEmail] = useState('')
+                - useState()の第一引数に`email`の初期値が格納される
+                - `setEmal()`の第一引数の値が`email`に格納される
+                    - onChange={(e) => setEmail(e.target.value)}により値が入力される度に`email`の値が更新される
+                - `useState()`には以下のルールがある
+                    - コンポーネント関数内のトップレベルに記載する
+                    - コンポーネント関数、custom hooksの内側から呼び出す
+                        ※ ファイルのトップレベル、通常の関数から呼び出す、分岐内から呼び出すなどはNG
+                - e.preventDefault()
+                    - submitAuthHandler()のデフォルトの動作を抑制する(ここではformで使用されているためフォームの送信(ページリロード含む)イベントを抑制している)
+    - hooksファイル
+        - 概要
+            - コンポーネントに紐づくビジネスロジックを記載するファイル
+        - import ライブラリ
+            - import axios from "axios";
+            - import { useNavigate } from "react-router-dom";
+            - import { useMutation } from "@tanstack/react-query";
+        - import パッケージ
+            - import { Credential } from "../types";
+            - import { useError } from "./userError";
+        - コード解説
+            - const navigate = useNavigate()
+            - useMutation()
+                - ページ遷移に使用するAPI
+                - コンポーネントを起点としてパスを積み上げていく
+                    - `navigate('/home')`とするとルートを起点に遷移する
+                    - `navigate('home')`とするとパスを積み上げる(コンポーネントのパスが`http://localhost/hoge1/hoge2`の場合`http://localhost/hoge1/hoge2/home`に遷移する)
+                    - `navigate('../home')`とするとコンポーネントと同一レベルのパスに遷移する(コンポーネントのパスが`http://localhost/hoge1/hoge2`の場合`http://localhost/hoge1/home`に遷移する)
+                - コンポーネントが`/path1/path2/*`のようににワイルドカードを使用したパスにハンドルされている際、ワイルドカードの範囲のパスは考慮されない
+                    -  `navigate('path3')`とすると`http://localhost/path1/path2/path3`となる
+                    - `navigate('../path5')`とすると`http://localhost/path1/path5`となる
+            - useMutation()
+                - 
+

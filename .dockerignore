@@ -1,0 +1,7 @@
+node_modules
+.gitignore
+docker-compose.yml
+Dockerfile
+envoy.yaml
+ReactDescription.md
+README.md

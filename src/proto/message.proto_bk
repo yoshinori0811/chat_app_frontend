@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+option go_package = "/pb";
+
+package proto;
+
+service MessageService {
+	// rpc Message (stream Room) returns (stream MessageResponse){};
+	rpc MessageServerStream (Room) returns (stream MessageResponse){};
+}
+
+message UserInfo {
+	string name = 1;
+}
+message MessageInfo {
+	uint32 id = 1;
+	string uuid = 2;
+	string content = 3;
+	string timestamp = 4;
+	UserInfo user = 5;
+}
+
+message MessageRequest {
+    uint32 id = 1;
+	string uuid = 2;
+	string name = 3;
+	string email = 4;
+	string session_id = 5;
+}
+
+message MessageResponse {
+	string type = 1;
+	MessageInfo message_info = 2;
+}
+
+message Room {
+	string uuid = 1;
+}
+
+message Empty {}

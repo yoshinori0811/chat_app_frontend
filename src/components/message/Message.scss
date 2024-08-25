@@ -1,0 +1,49 @@
+.messageWrapper {
+    margin-left: 20px;
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    .messageCard {
+        display: flex;
+    }
+    .messageContent {
+        display: flex;
+        align-items: flex-start;
+        .messageInfo {
+            padding: 0px 20px 0px 10px;
+
+            .editMessage {
+                padding-top: 5px;
+                display: flex;
+                flex-direction: column;
+
+                input[name="editMessage"] {
+                    background: #474b53;
+                    padding: 8px;
+                    border-radius: 5px;
+                    color: #ffffff;
+                    outline: none;
+                    width: 100%;
+                    border: none;
+                }
+                .editGuide {
+                    font-size: 14px;
+                }
+            }
+            .inviteMessageBody {
+                display: flex;
+                .messageInviteButton {
+                    padding-left: 10px;
+                }
+            }
+        }
+        .messageTimestamp {
+            color: #7b7c85;
+            margin-left: 20px;
+            font-size: 16px;
+        }
+    }
+}
+input {
+    color: black;
+}

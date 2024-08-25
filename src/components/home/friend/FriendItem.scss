@@ -1,0 +1,16 @@
+.friendRows {
+    display: flex;
+    justify-content: space-between;
+    .actions {
+        display: flex;
+        justify-content: flex-end;
+
+        .dmAction:hover {
+            color: red;
+        }
+        .otherAction:hover {
+            color: green;
+        }
+    }
+
+}

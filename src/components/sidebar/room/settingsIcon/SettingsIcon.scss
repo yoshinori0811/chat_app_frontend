@@ -1,0 +1,30 @@
+.SettingsIconWrapper {
+    position: relative;
+}
+.settingsIconToggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.settingsIconToggle:hover {
+    cursor: pointer;
+    background-color: #535353;
+}
+.settingIonSettings {
+    position: absolute; /* 絶対位置に設定 */
+    width: 210px;
+    top: 100%; /* アイコンの下に配置 */
+    right: 0; /* 左端に揃える */
+    background-color: #000000; /* 背景色（必要に応じて変更） */
+    z-index: 1000; /* 他の要素より前面に表示する */
+}
+
+.settingIonMenuItem {
+    padding: 10px;
+    font-size: 16px;
+    text-align: center;
+}
+.settingIonMenuItem:hover{
+    background-color: #535353;
+    cursor: pointer;
+}

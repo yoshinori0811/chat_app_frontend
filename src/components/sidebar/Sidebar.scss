@@ -1,0 +1,141 @@
+.sidebar {
+    display: flex;
+    width: 312px;
+    height: 100vh;
+    .sidebarLeft {
+        width: 72px;
+        display: flex;
+        justify-content:space-between;
+        flex-direction: column;
+        align-items: center;
+        background-color: #1e1f22;
+        padding: 7px 15px;
+
+        /* スクロール可能にするために高さを設定 */
+        height: 100%;
+        overflow-y: auto; /* 縦方向にスクロールを有効にする */
+        overflow-x: hidden; /* 横方向のスクロールを無効にする */
+
+
+        .sidebarIcon {
+            margin-top: 10px;
+            width: 60px;
+            height: 60px;
+            background-color: #1e1f22;
+            border-radius: 9999px;
+            margin-bottom: 10px;
+            position: relative;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #ffffff;
+            font-size: 14px;
+            word-break: break-word;
+
+            .sidebarImgIcon {
+                position: absolute;
+                width: 50px;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+            .addRoom {
+                color: #ffffff;
+                font-size: 40px !important;
+            }
+        }
+        .sidebarRoomIcon {
+            overflow: hidden;
+        }
+        .sidebarIcon:hover {
+            background-color: #ffffff;
+        }
+
+        .sidebarRoom {
+            margin-bottom: 10px;
+        }
+
+        /* スクロールバーのカスタマイズ */
+        &::-webkit-scrollbar {
+            width: 3px; /* スクロールバーの幅 */
+        }
+        &::-webkit-scrollbar-thumb {
+            background-color: #1e1f22; /* スクロールバーの色 */
+            border-radius: 4px; /* スクロールバーの角を丸くする */
+        }
+        &::-webkit-scrollbar-track {
+            background-color: #1e1f22; /* スクロールバーのトラック（背景）の色 */
+        }
+    }
+
+    .sidebarLeft:hover {
+        &::-webkit-scrollbar-thumb {
+            background-color: #555; /* ホバー時のスクロールバーの色 */
+        }
+    }
+
+    .sidebarRight {
+        background-color: #2c2d30;
+        width: 240px;
+        position: relative;
+
+        .sidebarTop {
+            height: 42px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            padding-left: 8px;
+            padding-right: 8px;
+            cursor: pointer;
+            .sidebarFriendIcon {
+                width: 32px;
+                height: 32px;
+            }
+            h3 {
+                margin-left: 12px;
+                width: 64px;
+                height: 20px;
+            }
+        }
+        .sidebarTop:hover {
+            background-color: #3f4249;
+        }
+
+        .sidebarChannels {
+            padding: 13px;
+            .sidebarChannelsHeader{
+                color: #ffffff;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 5px;
+                .sidebarAddIcon {
+                    cursor: pointer;
+                }
+            }
+            .dmwrapper:hover {
+                background-color: #3f4249;
+            }
+            .dm {
+                color: #949ba5;
+            }
+        }
+
+        .sidebarFooter {
+            position:absolute;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+
+            .accountName {
+                margin-left: 5px;
+                h4 {
+                    color:#ffffff;
+                    font-weight: 500;
+                }
+            }
+        }
+    }
+}
