@@ -1,11 +1,17 @@
 version: '3.8'
+
 services:
   react-app:
     build:
       context: ./
     ports:
-      # - "80:80"
+      - "80:80"
       - "443:443"
+    depends_on:
+      - envoy
+      - certbot
+    volumes:
+      - /etc/letsencrypt:/etc/nginx/certs
 
   envoy:
     image: envoyproxy/envoy:v1.15.0
@@ -15,3 +21,10 @@ services:
     volumes:
       - ./envoy.yaml:/etc/envoy/envoy.yaml
     command: ["/usr/local/bin/envoy", "-c", "/etc/envoy/envoy.yaml"]
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - /etc/letsencrypt:etc/letsencrypt
+      - /var/lib/letsencrypt:/var/lib/letsencrypt
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
