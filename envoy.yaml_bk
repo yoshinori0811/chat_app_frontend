@@ -3,7 +3,7 @@ static_resources:
     - name: listener_0
       address:
         # MEEMO: フロントエンドのアドレス,ポートを記載
-        socket_address: { address: 57.181.5.168, port_value: 9000 }
+        socket_address: { address: 0.0.0.0, port_value: 9000 }
       filter_chains:
         - filters:
             - name: envoy.filters.network.http_connection_manager
@@ -23,7 +23,7 @@ static_resources:
                             max_grpc_timeout: 0s
                       cors:
                         allow_origin_string_match:
-                          - exact: "http://localhost:3000"  # TODO: ドメインを修正する
+                          - exact: "http://localhost:3000"
                           # - prefix: "http://localhost:3000/"
                         allow_methods: GET, PUT, DELETE, POST, OPTIONS
                         allow_headers: keep-alive,user-agent,cache-control,content-type,content-transfer-encoding,custom-header-1,x-accept-content-transfer-encoding,x-accept-response-streaming,x-user-agent,x-grpc-web,grpc-timeout,Authorization,Set-Cookie,Cookie
@@ -52,6 +52,6 @@ static_resources:
                   address:
                     socket_address:
                       # バックエンドアプリのアドレス,ポートを記載
-                      address: 43.206.155.208
-                      # address: localhost
+                      # address: 43.206.155.208
+                      address: localhost
                       port_value: 50051
