@@ -27,6 +27,7 @@ export const MessageContent = () => {
     const messageListRef = useRef<HTMLUListElement>(null);
     const messageListParentRef = useRef<HTMLDivElement>(null);
     const [scrollTop, setScrollTop] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     const apiUrlEscaped = `${process.env.REACT_APP_API_URL}/rooms/`.replace(/\//g, '\\/')
     const invitePattern = `([^/]+)\\/invite`
@@ -65,59 +66,38 @@ export const MessageContent = () => {
     }
 
     const loadMore = useCallback(async (messages: MessageInfo[]) => {
-        if(!roomId || !messages?.length) {
+        if(loading || !roomId || !messages?.length) {
             return
         }
+        setLoading(true)
 
-        const res = await getMoreMutation.mutateAsync({
-            roomId: roomId,
-            offset: messages.length,
-        })
-        const newMessages = res.toObject().messagesList as MessageInfo[]
+        try {
+            const res = await getMoreMutation.mutateAsync({
+                roomId: roomId,
+                offset: messages.length,
+            })
+            const newMessages = res.toObject().messagesList as MessageInfo[]
 
-        if (!newMessages?.length) {
-            setHasMore(false)
-            return
+            if (!newMessages?.length) {
+                setHasMore(false)
+                return
+            }
+
+            setMessages((prevMessages) => {
+                const scrollTop = messageListParentRef.current?.scrollTop;
+                const scrollHeight = messageListParentRef.current?.scrollHeight;
+                const newScrollTop = (scrollHeight ?? 0) - (scrollTop ?? 0)
+                setScrollTop(newScrollTop)
+                return [...newMessages, ...prevMessages]
+            })
+        } finally {
+            setLoading(false)
         }
-
-        // setMessages((prevMessages) => [...newMessages, ...prevMessages])
-        setMessages((prevMessages) => {
-            // const newScrollTop = messageListRef.current?.scrollHeight ?? 0
-
-            
-            const scrollTop = messageListParentRef.current?.scrollTop;
-            const clientHeight = messageListParentRef.current?.clientHeight;
-            const scrollHeight = messageListParentRef.current?.scrollHeight;
-            const viewportHeight = window.innerHeight;
-            const newScrollTop = (scrollHeight ?? 0) - (scrollTop ?? 0)
-            console.log("scrollTop: " + scrollTop)
-            console.log("clientHeight: " + clientHeight)
-            console.log("scrollHeight: " + scrollHeight)
-            console.log("viewportHeight: " + viewportHeight)
-            console.log("window.scrollY" + window.scrollY)
-            setScrollTop(newScrollTop)
-            return [...newMessages, ...prevMessages]
-        })
-
-
-        // スクロール位置を保持
-        // if (messageListRef.current) {
-        //     const { scrollTop, scrollHeight, clientHeight } = messageListRef.current;
-        //     const newScrollTop = scrollHeight - clientHeight;
-        //     messageListRef.current.scrollTop = newScrollTop;
-        // }
-
-        // requestAnimationFrame(() => {
-        //     if (messageListRef.current) {
-        //         messageListRef.current.scrollTop = scrollTop;
-        //     }
-        // })
-    }, [roomId, getMoreMutation])
+    }, [roomId, getMoreMutation, loading])
 
     useEffect(() => {
         refetch()
         setMessages(initialMessages?.messages ?? [])
-    // }, [initialMessages])
     }, [initialMessages, refetch])
 
     useEffect(() => {
@@ -165,10 +145,6 @@ export const MessageContent = () => {
                 endDiv.current?.scrollIntoView()
                 setIsVisibility(true)
             } else {
-                // if (messageListRef.current) {
-                //     console.log("XXXXXXXXXXXXXXX")
-                //     messageListRef.current.scrollTop = scrollTop;
-                // }
                 if (messageListParentRef.current) {
                     const newHeight = messageListParentRef.current.scrollHeight
                     messageListParentRef.current.scrollTop = newHeight - scrollTop;

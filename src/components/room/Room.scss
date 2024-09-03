@@ -1,9 +1,17 @@
-.dmHeader {
-    height: 48px;
-    padding: 8px;
-    border-bottom: 2px solid black;
+.wrapper {
+    width: 100%;
 }
 
-input[name="message"] {
-    color: black;
+.roomMessageContentWrappper {
+    width: 100%;
 }
+
+// .dmHeader {
+//     height: 48px;
+//     padding: 8px;
+//     border-bottom: 2px solid black;
+// }
+
+// input[name="message"] {
+//     color: black;
+// }
