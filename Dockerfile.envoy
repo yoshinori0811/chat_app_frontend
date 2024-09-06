@@ -1,0 +1,12 @@
+# ベースイメージとして Envoy の公式イメージを使用
+FROM envoyproxy/envoy:v1.17-latest
+
+# 必要なパッケージをインストール
+RUN apt-get update && apt-get install -y gettext-base
+
+
+# Envoy 設定ファイルを含むボリュームをマウントするディレクトリを作成
+RUN mkdir -p /etc/envoy && chmod 777 /etc/envoy
+
+# 作業ディレクトリを設定
+WORKDIR /etc/envoy

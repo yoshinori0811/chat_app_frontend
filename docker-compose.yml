@@ -4,27 +4,43 @@ services:
   react-app:
     build:
       context: ./
+      dockerfile: Dockerfile.react
     ports:
-      - "80:80"
-      - "443:443"
+      - "${HTTP_PORT}:${HTTP_PORT}"
+      - "${HTTPS_PORT}:${HTTPS_PORT}"
     depends_on:
       - envoy
     volumes:
       - ./certs/fullchain.pem:/etc/nginx/certs/fullchain.pem:ro
       - ./certs/privkey.pem:/etc/nginx/certs/privkey.pem:ro
+    environment:
+      - FRONT_SERVER_DOMAIN=${FRONT_SERVER_DOMAIN}
+      - BACK_SERVER_DOMAIN=${BACK_SERVER_DOMAIN}
+      - HTTP_PORT=${HTTP_PORT}
+      - HTTPS_PORT=${HTTPS_PORT}
+      - BACKEND_SERVER_PORT=${BACKEND_SERVER_PORT}
+      - GRPC_PROXY_PORT=${GRPC_PROXY_PORT}
+      - GRPC_PORT=${GRPC_PORT}
     networks:
       - app-network
+    command: /bin/sh -c "envsubst '$$FRONT_SERVER_DOMAIN$$BACK_SERVER_DOMAIN$$HTTP_PORT$$HTTPS_PORT$$BACKEND_SERVER_PORT$$GRPC_PROXY_PORT$$GRPC_PORT' < /etc/nginx/templates/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
 
   envoy:
-    image: envoyproxy/envoy:v1.17-latest
+    build:
+      context: ./
+      dockerfile: Dockerfile.envoy
     container_name: envoy-grpc-proxy_with-react-app
     ports:
-      - "9000:9000"
+      - "${GRPC_PORT}:${GRPC_PORT}"
     volumes:
-      - ./envoy.yaml:/etc/envoy/envoy.yaml
+      - ./envoy.yaml.template:/etc/envoy/envoy.yaml.template
+    environment:
+      - GRPC_PROXY_PORT=${GRPC_PROXY_PORT}
+      - GRPC_PORT=${GRPC_PORT}
+      - BACK_SERVER_DOMAIN=${BACK_SERVER_DOMAIN}
     networks:
       - app-network
-    command: ["/usr/local/bin/envoy", "-c", "/etc/envoy/envoy.yaml"]
+    command: /bin/sh -c "rm /etc/envoy/envoy.yaml && envsubst '$$GRPC_PROXY_PORT$$GRPC_PORT$$BACK_SERVER_DOMAIN' < /etc/envoy/envoy.yaml.template > /etc/envoy/envoy.yaml && exec envoy -c /etc/envoy/envoy.yaml"
 
 networks:
   app-network:

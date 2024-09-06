@@ -1,20 +1,22 @@
 .wrapper {
+    width: 100%;
     display: flex;
     // height: 100vh; /* ビューポート全体の高さに設定 */
     height: 100%; /* ビューポート全体の高さに設定 */
 }
 .dmMessageContentWrapper {
+    width: 100%;
     height: 100%; // TODO: テスト
     flex: 1;
     display: flex;
     flex-direction: column;
 }
-.dmHeader {
-    height: 48px;
-    padding: 8px;
-    border-bottom: 2px solid black;
-}
+// .dmHeader {
+//     height: 48px;
+//     padding: 8px;
+//     border-bottom: 2px solid black;
+// }
 
-input[name="message"] {
-    color: black;
-}
+// input[name="message"] {
+//     color: black;
+// }
