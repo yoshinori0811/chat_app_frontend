@@ -102,7 +102,8 @@ export const MessageContent = () => {
 
     useEffect(() => {
         const client = new MessageServiceClient(`${process.env.REACT_APP_GRPC_URL}`, null, {
-            withCredentials: true
+            timeout: 10 * 60 * 1000,
+            withCredentials: true,
         })
         const req = new ConnectRequest()
         if(!roomId) {

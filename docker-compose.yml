@@ -40,7 +40,7 @@ services:
       - BACK_SERVER_DOMAIN=${BACK_SERVER_DOMAIN}
     networks:
       - app-network
-    command: /bin/sh -c "rm /etc/envoy/envoy.yaml && envsubst '$$GRPC_PROXY_PORT$$GRPC_PORT$$BACK_SERVER_DOMAIN' < /etc/envoy/envoy.yaml.template > /etc/envoy/envoy.yaml && exec envoy -c /etc/envoy/envoy.yaml"
+    command: /bin/sh -c "rm /etc/envoy/envoy.yaml && envsubst '$$GRPC_PROXY_PORT$$GRPC_PORT$$BACK_SERVER_DOMAIN' < /etc/envoy/envoy.yaml.template > /etc/envoy/envoy.yaml && exec envoy -c /etc/envoy/envoy.yaml -l info"
 
 networks:
   app-network:

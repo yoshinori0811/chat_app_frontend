@@ -8,5 +8,7 @@ RUN apt-get update && apt-get install -y gettext-base
 # Envoy 設定ファイルを含むボリュームをマウントするディレクトリを作成
 RUN mkdir -p /etc/envoy && chmod 777 /etc/envoy
 
+RUN mkdir /var/log/envoy && touch /var/log/envoy/admin_access.log && chmod 777 /var/log/envoy/admin_access.log
+
 # 作業ディレクトリを設定
 WORKDIR /etc/envoy
